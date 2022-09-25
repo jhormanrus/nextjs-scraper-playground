@@ -9,6 +9,9 @@ const Playground = () => {
   const [isScraping, setIsScraping] = useState(false)
   const [error, setError] = useState(null)
   const [url, setUrl] = useState("")
+  const [multiple, setMultiple] = useState(false)
+  const [from, setFrom] = useState("")
+  const [to, setTo] = useState("")
   const [properties, setProperties] = useState([{ name: "", selector: "" }])
   const [result, setResult] = useState(null)
 
@@ -52,7 +55,7 @@ const Playground = () => {
     setError(null)
   }
 
-  const scrape = (e) => {
+  const scrape = async (e) => {
     e.preventDefault()
     setResult(null)
     setIsScraping(true)
@@ -60,9 +63,19 @@ const Playground = () => {
     if (url.indexOf("http") !== 0) {
       setUrl("https://" + url)
     }
-    return fetch("/api/scrape", {
+    if (multiple) {
+      for (let i = from; i <= to; i++) {
+        const pageUrl = url.replace('{{page_number}}', i)
+        await fetchScrape(pageUrl)
+      }
+    } else {
+      fetchScrape(url)
+    }
+  }
+
+  const fetchScrape = async (url) => {
+    return await fetch("/api/scrape", {
       method: "POST",
-      // eslint-disable-next-line no-undef
       headers: new Headers({ "Content-Type": "application/json" }),
       credentials: "same-origin",
       body: JSON.stringify({
@@ -83,7 +96,12 @@ const Playground = () => {
                 data.html
             )
           } else {
-            setResult(JSON.stringify(data.result, null, 2))
+            setResult((prevResult) => {
+              return JSON.stringify([
+                ...JSON.parse(prevResult)?? [],
+                ...data.result
+              ], null, 2)
+            })
           }
           setIsScraping(false)
           document
@@ -118,6 +136,54 @@ const Playground = () => {
             setUrl(e.target.value)
           }}
         />
+        <div className="form-horizontal">
+          <input
+            id="multi-pages"
+            type="checkbox"
+            checked={multiple}
+            onChange={(e) => {
+              setMultiple(e.target.checked)
+            }}
+          />
+          <label htmlFor="multi-pages">Multiple pages</label>
+        </div>
+        {
+          multiple && (
+            <>
+              <small>insert <strong>{'{{page_number}}'}</strong> to URL in order to be replaced with</small>
+              <div className="form-horizontal">
+                <div>
+                  <div>
+                    <label htmlFor="from">From</label>
+                  </div>
+                  <input
+                    type="number"
+                    id="from"
+                    value={from}
+                    required={true}
+                    onChange={(e) => {
+                      setFrom(e.target.value)
+                    }}
+                  />
+                </div>
+                <div>
+                  <div>
+                    <label htmlFor="to">To</label>
+                  </div>
+                  <input
+                    type="number"
+                    name="to"
+                    value={to}
+                    required={true}
+                    onChange={(e) => {
+                      setTo(e.target.value)
+                    }}
+                  />
+                </div>
+              </div>
+            </>
+          )
+        }
         <h3 className="heading">Data</h3>
         <div className="properties">
           {properties.map((property, index) => (
@@ -158,11 +224,15 @@ const Playground = () => {
           margin: 16px 0 4px;
         }
         form {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
           padding: 16px;
         }
         label {
           display: block;
           margin-bottom: 8px;
+          white-space: nowrap;
         }
         input {
           padding: 8px 16px;
@@ -170,9 +240,16 @@ const Playground = () => {
           width: 100%;
           max-width: 480px;
         }
+        input[type="number"] {
+          width: 100px;
+        }
         button {
           font-size: 24px;
           padding: 24px 64px;
+        }
+        .form-horizontal {
+          display: flex;
+          gap: 8px;
         }
         .properties {
           max-width: 480px;
