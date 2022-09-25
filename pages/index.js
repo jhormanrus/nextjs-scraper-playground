@@ -20,6 +20,8 @@ const Index = () => (
         and <a href="https://cheerio.js.org/">cheerio</a>. <br />
         Created by <a href="https://johnpolacek.com">John Polacek</a>
         <br />
+        Improved by <a href="https://jhormanrus.vercel.app">Jhorman Rus</a>
+        <br />
         <small>
           ~ follow <a href="https://twitter.com/johnpolacek">@johnpolacek</a> ~
         </small>
@@ -57,8 +59,8 @@ const Index = () => (
       </p>
       <p>
         View source at: <br />
-        <a href="https://github.com/johnpolacek/nextjs-scraper-playground">
-          github.com/johnpolacek/nextjs-scraper-playground
+        <a href="https://github.com/jhormanrus/nextjs-scraper-playground">
+          github.com/jhormanrus/nextjs-scraper-playground
         </a>
       </p>
     </footer>

@@ -27,7 +27,7 @@ const getOptions = async () => {
     options = {
       args: chrome.args,
       executablePath: await chrome.executablePath,
-      headless: chrome.headless,
+      headless: true,
     }
   } else {
     options = {
