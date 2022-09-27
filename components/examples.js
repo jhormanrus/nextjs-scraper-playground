@@ -1,5 +1,4 @@
-import React, { useState } from "react"
-import Property from "./property"
+import React from "react"
 
 const SelectExample = ({ onSelect }) => {
   const examples = [
@@ -77,6 +76,17 @@ const SelectExample = ({ onSelect }) => {
         { name: "link", selector: ".b-conference a", type: "href" },
         { name: "date", selector: ".b-conference .date", type: "text" },
       ],
+    },
+    {
+      name: "Diccionario Biblico",
+      url: "https://www.sigueme.net/diccionario-biblico/?pag={{page_number}}",
+      properties: [
+        { name: "name", selector: "div.entry h3[itemprop=name] strong", type: "text" },
+        { name: "description", selector: "div.entry span[itemprop=description]", type: "text" },
+      ],
+      multiple: true,
+      from: 1,
+      to: 3,
     },
   ]
 

@@ -23,7 +23,7 @@ const Index = () => (
         Improved by <a href="https://jhormanrus.vercel.app">Jhorman Rus</a>
         <br />
         <small>
-          ~ follow <a href="https://twitter.com/johnpolacek">@johnpolacek</a> ~
+          ~ follow <a href="https://twitter.com/johnpolacek">@johnpolacek</a> <a href="https://github.com/jhormanrus">@jhormanrus</a> ~
         </small>
       </h2>
       <Playground />

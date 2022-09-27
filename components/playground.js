@@ -12,6 +12,7 @@ const Playground = () => {
   const [multiple, setMultiple] = useState(false)
   const [from, setFrom] = useState("")
   const [to, setTo] = useState("")
+  const [indexScraping, setIndexScraping] = useState(0)
   const [properties, setProperties] = useState([{ name: "", selector: "" }])
   const [result, setResult] = useState(null)
 
@@ -40,6 +41,9 @@ const Playground = () => {
   const onSelectExample = (example) => {
     if (typeof example === "object") {
       setUrl(example.url)
+      setMultiple(example.multiple?? false)
+      setFrom(example.from?? "")
+      setTo(example.to?? "")
       setProperties(example.properties)
       setResult(null)
       setTimeout(() => {
@@ -65,12 +69,17 @@ const Playground = () => {
     }
     if (multiple) {
       for (let i = from; i <= to; i++) {
+        setIndexScraping(i)
         const pageUrl = url.replace('{{page_number}}', i)
         await fetchScrape(pageUrl)
       }
     } else {
-      fetchScrape(url)
+      await fetchScrape(url)
     }
+    setIsScraping(false)
+    document
+      .getElementById("scrapeButton")
+      .scrollIntoView({ behavior: "smooth" })
   }
 
   const fetchScrape = async (url) => {
@@ -103,10 +112,6 @@ const Playground = () => {
               ], null, 2)
             })
           }
-          setIsScraping(false)
-          document
-            .getElementById("scrapeButton")
-            .scrollIntoView({ behavior: "smooth" })
         } else {
           setError("Oops! Something went wrong: " + data.error)
           setIsScraping(false)
@@ -203,7 +208,18 @@ const Playground = () => {
         {error && <p className="error">{error}</p>}
         <div>
           <button id="scrapeButton" disabled={isScraping}>
-            {isScraping ? <Spinner /> : "Scrape"}
+            {
+              isScraping
+                ? <>
+                    <Spinner />
+                    {
+                      multiple
+                        ? `Scraping page ${indexScraping} of ${to}`
+                        : 'Scraping'
+                    }
+                  </>
+                : "Scrape"
+            }
           </button>
         </div>
       </form>
@@ -244,6 +260,7 @@ const Playground = () => {
           width: 100px;
         }
         button {
+          display: flex;
           font-size: 24px;
           padding: 24px 64px;
         }
